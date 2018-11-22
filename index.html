@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			ul;li{
+				list-style: none;
+			}
+			li{
+				width: 200px;
+				height: 320px;
+				border: 1px solid #000000;
+				display: inline-block;
+			}
+			p{
+				border-bottom: 1px solid #CCCCCC;
+			}
+			img{
+				width: 200px;
+				height: 260px;
+			}
+			div{
+				width: 820px;
+			}
+			#box{
+				height: 300px;
+				border: 1px solid #000000;
+				margin-top: 20px;
+			}
+		
+			.qname{
+				margin: 0 100px;
+			}
+		</style>
+	</head>
+	<body>
+		<ul>
+			<li>
+				<img src="img/1.jpg"/>
+				<p class="shum">javascript语言精辟</p>
+				<p>¥<span class="jiage">40</span></p>
+			</li>
+			<li>
+				<img src="img/2.jpg"/>
+				<p class="shum">javascript权威指南</p>
+				<p>¥<span class="jiage">55</span></p>
+			</li>
+			<li>
+				<img src="img/3.jpg"/>
+				<p class="shum">精通javascript</p>
+				<p>¥<span class="jiage">35</span></p>
+			</li>
+			<li>
+				<img src="img/4.jpg"/>
+				<p class="shum">DOM编程艺术</p>
+				<p>¥<span class="jiage">45</span></p>
+			</li>
+		</ul>
+		
+		<div id="box">
+			<div id="box2">
+				<!--<p>
+					<span class="shuliang">1</span>
+					<span class="qname">javascript语言精辟</span>
+					<span>40</span>
+				</p>-->
+			</div>
+			
+			<div>
+				总价:¥<span id="wrap">0</span>
+			</div>
+		</div>
+		<script type="text/javascript">
+			window.onload = function(){
+				var oli = document.querySelectorAll("li");
+				var oshum = document.querySelectorAll(".shum");
+				var ojiage = document.querySelectorAll(".jiage");
+				
+				var oname=document.querySelectorAll(".qname");
+				var owrap = document.querySelector("#wrap");
+				var arr = [];
+				
+				var obox = document.querySelector("#box");
+				var obox2 = document.querySelector("#box2");
+				var a = 1;
+				for(var i=0; i<oli.length; i++){
+					oli[i].index = i;
+					oli[i].ondragstart = function(ev){
+						var ev = ev || window.event;
+						
+						ev.dataTransfer.setData("shum",oshum[this.index].innerHTML);
+						ev.dataTransfer.setData("jiage",ojiage[this.index].innerHTML);
+						ev.dataTransfer.setData("ind",this.index);
+					}
+					
+				}
+				
+				
+//				目标元素ondragover处理后面的ondrop事件
+				obox.ondragover = function(ev){
+					
+					var ev = ev || window.event;
+					
+					ev.preventDefault();
+					
+				}
+				
+				
+				
+//				在box释放事件
+				obox.ondrop= function(ev){
+					var ev = ev || window.event;
+					var sm = ev.dataTransfer.getData("shum");	//获取传输过来的数据
+					var jg = ev.dataTransfer.getData("jiage");	//获取传输过来的数据
+					var oind = ev.dataTransfer.getData("ind");
+					var oshuliang = document.querySelectorAll(".shuliang");
+					
+					
+					var aa;
+					var res = [arr[0]];	//不重复的新数组	
+					arr.push(oind);
+					for(var i = 0; i<arr.length; i++){
+						
+						var repeatFlag = false;	//标识重复元素
+						
+						for(var j=0; j<res.length; j++){	//每次arr[i]与res里面的所有元素依次比较
+							
+							if(arr[i] == res[j]){
+								
+								repeatFlag = true;	//找到重复的元素
+								aa=j;  //存储重复的下标
+								break;				//跳出循环
+								
+							}
+							
+						}
+						if(!repeatFlag){
+					
+							res.push(arr[i]);
+							
+						}	
+					}
+					console.log(res);
+					if (repeatFlag) {
+						
+					
+						oshuliang[aa].innerText=parseInt(oshuliang[aa].innerText)+1;
+					}else{
+						obox2.innerHTML += '<p><span class="shuliang">'+a+'</span><span class="qname">'+sm+'</span><span>'+jg+'</span></p>';
+					}
+					
+					
+					owrap.innerText=parseInt(owrap.innerText)+parseInt(jg);
+					
+					console.log(parseInt(jg));
+				}
+				
+			}
+		</script>
+	</body>
+</html>
